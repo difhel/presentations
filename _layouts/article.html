@@ -10,43 +10,35 @@ layout: default
   {% assign dir   = page.path | replace: 'index.md', '' %}
   {% assign items = '' %}
 
+  <p><strong>Debug:</strong> dir = “{{ dir }}”, items = “{{ items }}”</p>
+
   {% for sf in site.static_files %}
-    {% if sf.path contains dir %}
-      {% assign rel  = sf.path | replace_first: dir, '' %}
-      {% assign name = rel | split: '/' | first %}
-      {% if name != 'README.md' %}
-        {% unless items contains name %}
-          {% assign items = items | append: name | append: '|' %}
-        {% endunless %}
-      {% endif %}
+  {% if sf.path contains dir %}
+    {% assign rel  = sf.path | replace_first: dir, '' %}
+    {% assign name = rel | split: '/' | first %}
+    {% if name != 'README.md' %}
+      {% unless items contains name %}
+        {% assign items = items | append: name | append: '|' %}
+      {% endunless %}
+    {% endif %}
+  {% endif %}
+{% endfor %}
+
+{% if items != '' %}
+## Files
+
+<ul>
+  {% assign list = items | split: '|' %}
+  {% for name in list %}
+    {% if name != '' %}
+      <li>
+        {% if name contains '.' %}
+          <a href="{{ dir | append: name | relative_url }}">{{ name }}</a>
+        {% else %}
+          <a href="{{ dir | append: name | append: '/' | relative_url }}">{{ name }}/</a>
+        {% endif %}
+      </li>
     {% endif %}
   {% endfor %}
-
-  {%- comment -%}
-    Split back into an array (last element will be empty if we ended with '|').
-  {%- endcomment -%}
-  {% assign list = items | split: '|' %}
-
-  {%- comment -%}
-    Only render if we found at least one real entry.
-  {%- endcomment -%}
-  {% if list.size > 1 %}
-  ## Files
-
-  <ul>
-    {% for name in list %}
-      {% if name %}
-        <li>
-          {% if name contains '.' %}
-            <!-- individual file -->
-            <a href="{{ dir | append: name | relative_url }}">{{ name }}</a>
-          {% else %}
-            <!-- folder (link to its index) -->
-            <a href="{{ dir | append: name | append: '/' | relative_url }}">{{ name }}/</a>
-          {% endif %}
-        </li>
-      {% endif %}
-    {% endfor %}
-  </ul>
-  {% endif %}
-  
+</ul>
+{% endif %}
