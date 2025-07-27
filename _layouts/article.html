@@ -11,33 +11,14 @@ layout: default
 {% assign items = '' %}
 <p><strong>Debug:</strong> dir = “{{ dir }}”, items = “{{ items }}”</p>
 
-{% for sf in site.static_files %}
-  {% if sf.path startswith dir_path %}
-    {% assign rel  = sf.path | replace_first: dir_path, '' %}
-    {% assign name = rel   | split: '/'          | first    %}
-    {% unless name == 'README.md' or items contains name %}
-      {% assign items = items | append: name | append: '|' %}
-    {% endunless %}
-  {% endif %}
-{% endfor %}
-
-{% if items != '' %}
-## Files
-
-<ul>
-  {% assign list = items | split: '|' %}
-  {% for name in list %}
-    {% if name != '' %}
-      <li>
-        {% if name contains '.' %}
-          <!-- file -->
-          <a href="{{ page.url | append: name | relative_url }}">{{ name }}</a>
-        {% else %}
-          <!-- folder -->
-          <a href="{{ page.url | append: name | append: '/' | relative_url }}">{{ name }}/</a>
-        {% endif %}
-      </li>
+<div class="debug">
+  <h2>Debug: All static_files under {{ page.path | replace: 'index.md','/' }}</h2>
+  <ul>
+  {% assign dir_path = page.path | replace: 'index.md','/' %}
+  {% for sf in site.static_files %}
+    {% if sf.path startswith dir_path %}
+      <li>{{ sf.path }}</li>
     {% endif %}
   {% endfor %}
-</ul>
-{% endif %}
+  </ul>
+</div>
