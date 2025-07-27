@@ -1,3 +1,9 @@
+---
+layout: article
+title:   "TON Builders Meetup"
+date:    2025-07-27
+summary: "Speeding up UX in TON applications: how to build the perfect frontend for TMA and maximize conversion"
+---
 # TON Builders Meetup July 26, 2025, Moscow
 On July 26, the TON Foundation [hosted a meetup](https://t.me/toncishub/1713) for developers and founders on TON in Moscow. I was one of seven invited speakers.
 
