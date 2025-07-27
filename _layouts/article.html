@@ -5,33 +5,48 @@ layout: default
 {{ content }}
 
 {%- comment -%}
-1) Get the folder of this page (ends in “/”)
-2) Find every static_file whose path starts with it
-3) Group by the first segment (so web/, presentation.key, etc.)
-{%- endcomment -%}
-{% assign dir = page.path | remove: 'index.md' %}
-{% assign assets = site.static_files | where_exp: "sf", "sf.path startswith dir" %}
-{% assign groups = assets
-   | group_by_exp: "sf", "sf.path | remove_first: dir | split: '/' | first"
-%}
+    Build a pipe‑delimited string of one‑level names under this page’s folder.
+  {%- endcomment -%}
+  {% assign dir   = page.path | replace: 'index.md', '' %}
+  {% assign items = '' %}
 
-{%- if groups.size > 0 -%}
-## Files
+  {% for sf in site.static_files %}
+    {% if sf.path contains dir %}
+      {% assign rel  = sf.path | replace_first: dir, '' %}
+      {% assign name = rel | split: '/' | first %}
+      {% if name != 'README.md' %}
+        {% unless items contains name %}
+          {% assign items = items | append: name | append: '|' %}
+        {% endunless %}
+      {% endif %}
+    {% endif %}
+  {% endfor %}
 
-<ul>
-{% for g in groups %}
-  {%- unless g.name == 'README.md' -%}
-    <li>
-      {%- assign name = g.name -%}
-      {%- if name contains '.' -%}
-        <!-- a plain file -->
-        <a href="{{ dir | append: name | relative_url }}">{{ name }}</a>
-      {%- else -%}
-        <!-- a folder (link to its index.html) -->
-        <a href="{{ dir | append: name | append: '/' | relative_url }}">{{ name }}/</a>
-      {%- endif -%}
-    </li>
-  {%- endunless -%}
-{% endfor %}
-</ul>
-{%- endif -%}
+  {%- comment -%}
+    Split back into an array (last element will be empty if we ended with '|').
+  {%- endcomment -%}
+  {% assign list = items | split: '|' %}
+
+  {%- comment -%}
+    Only render if we found at least one real entry.
+  {%- endcomment -%}
+  {% if list.size > 1 %}
+  ## Files
+
+  <ul>
+    {% for name in list %}
+      {% if name %}
+        <li>
+          {% if name contains '.' %}
+            <!-- individual file -->
+            <a href="{{ dir | append: name | relative_url }}">{{ name }}</a>
+          {% else %}
+            <!-- folder (link to its index) -->
+            <a href="{{ dir | append: name | append: '/' | relative_url }}">{{ name }}/</a>
+          {% endif %}
+        </li>
+      {% endif %}
+    {% endfor %}
+  </ul>
+  {% endif %}
+  
