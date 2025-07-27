@@ -12,14 +12,12 @@ layout: default
 <p><strong>Debug:</strong> dir = “{{ dir }}”, items = “{{ items }}”</p>
 
 {% for sf in site.static_files %}
-  {% if sf.url and sf.url startswith dir %}
-    {% assign rel  = sf.url | remove_first: dir %}
-    {% assign name = rel | split: '/' | first %}
-    {% if name and name != 'README.md' %}
-      {% unless items contains name %}
-        {% assign items = items | append: name | append: '|' %}
-      {% endunless %}
-    {% endif %}
+  {% if sf.path startswith dir_path %}
+    {% assign rel  = sf.path | replace_first: dir_path, '' %}
+    {% assign name = rel   | split: '/'          | first    %}
+    {% unless name == 'README.md' or items contains name %}
+      {% assign items = items | append: name | append: '|' %}
+    {% endunless %}
   {% endif %}
 {% endfor %}
 
@@ -29,14 +27,14 @@ layout: default
 <ul>
   {% assign list = items | split: '|' %}
   {% for name in list %}
-    {% if name %}
+    {% if name != '' %}
       <li>
         {% if name contains '.' %}
-          <!-- a file -->
-          <a href="{{ dir | append: name | relative_url }}">{{ name }}</a>
+          <!-- file -->
+          <a href="{{ page.url | append: name | relative_url }}">{{ name }}</a>
         {% else %}
-          <!-- a folder -->
-          <a href="{{ dir | append: name | append: '/' | relative_url }}">{{ name }}/</a>
+          <!-- folder -->
+          <a href="{{ page.url | append: name | append: '/' | relative_url }}">{{ name }}/</a>
         {% endif %}
       </li>
     {% endif %}
