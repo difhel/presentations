@@ -3,3 +3,35 @@ layout: default
 ---
 
 {{ content }}
+
+{%- comment -%}
+1) Get the folder of this page (ends in “/”)
+2) Find every static_file whose path starts with it
+3) Group by the first segment (so web/, presentation.key, etc.)
+{%- endcomment -%}
+{% assign dir = page.path | remove: 'index.md' %}
+{% assign assets = site.static_files | where_exp: "sf", "sf.path startswith dir" %}
+{% assign groups = assets
+   | group_by_exp: "sf", "sf.path | remove_first: dir | split: '/' | first"
+%}
+
+{%- if groups.size > 0 -%}
+## Files
+
+<ul>
+{% for g in groups %}
+  {%- unless g.name == 'README.md' -%}
+    <li>
+      {%- assign name = g.name -%}
+      {%- if name contains '.' -%}
+        <!-- a plain file -->
+        <a href="{{ dir | append: name | relative_url }}">{{ name }}</a>
+      {%- else -%}
+        <!-- a folder (link to its index.html) -->
+        <a href="{{ dir | append: name | append: '/' | relative_url }}">{{ name }}/</a>
+      {%- endif -%}
+    </li>
+  {%- endunless -%}
+{% endfor %}
+</ul>
+{%- endif -%}
