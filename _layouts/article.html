@@ -5,18 +5,17 @@ layout: default
 {{ content }}
 
 {%- comment -%}
-    Build a pipe‑delimited string of one‑level names under this page’s folder.
-  {%- endcomment -%}
-  {% assign dir   = page.path | replace: 'index.md', '' %}
-  {% assign items = '' %}
+  Build a deduped list of every top‑level file/folder under this page’s URL
+{%- endcomment -%}
+{% assign dir   = page.url %}
+{% assign items = '' %}
+<p><strong>Debug:</strong> dir = “{{ dir }}”, items = “{{ items }}”</p>
 
-  <p><strong>Debug:</strong> dir = “{{ dir }}”, items = “{{ items }}”</p>
-
-  {% for sf in site.static_files %}
-  {% if sf.path contains dir %}
-    {% assign rel  = sf.path | replace_first: dir, '' %}
+{% for sf in site.static_files %}
+  {% if sf.url and sf.url startswith dir %}
+    {% assign rel  = sf.url | remove_first: dir %}
     {% assign name = rel | split: '/' | first %}
-    {% if name != 'README.md' %}
+    {% if name and name != 'README.md' %}
       {% unless items contains name %}
         {% assign items = items | append: name | append: '|' %}
       {% endunless %}
@@ -30,11 +29,13 @@ layout: default
 <ul>
   {% assign list = items | split: '|' %}
   {% for name in list %}
-    {% if name != '' %}
+    {% if name %}
       <li>
         {% if name contains '.' %}
+          <!-- a file -->
           <a href="{{ dir | append: name | relative_url }}">{{ name }}</a>
         {% else %}
+          <!-- a folder -->
           <a href="{{ dir | append: name | append: '/' | relative_url }}">{{ name }}/</a>
         {% endif %}
       </li>
