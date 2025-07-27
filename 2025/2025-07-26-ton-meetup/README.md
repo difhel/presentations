@@ -5,6 +5,6 @@ On July 26, the TON Foundation [hosted a meetup](https://t.me/toncishub/1713) fo
 
 ## Available presentation formats:
 
-* `web` – web version of the presentation (with video)
-* `.key` – Apple Keynote presentation (with video)
-* `.pdf` – PDF presentation (without video)
+* [web](./web)  – web version of the presentation (with video)
+* [MyTonWallet.key](./MyTonWallet.key) – Apple Keynote presentation (with video)
+* [Mark 26 Jul.pdf](./Mark%2026%20Jul.pdf) – PDF presentation (without video)

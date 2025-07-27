@@ -5,5 +5,5 @@ Todo
 
 ## Available presentation formats:
 
-* `.fig` – Figma presentation
-* `.pdf` – PDF presentation
+* [VKGPT.fig](./VKGPT.fig)  – Figma presentation
+* [VKGPT.pdf](./VKGPT.pdf) – PDF presentation

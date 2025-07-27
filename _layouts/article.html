@@ -3,22 +3,3 @@ layout: default
 ---
 
 {{ content }}
-
-{%- comment -%}
-  Build a deduped list of every top‑level file/folder under this page’s URL
-{%- endcomment -%}
-{% assign dir   = page.url %}
-{% assign items = '' %}
-<p><strong>Debug:</strong> dir = “{{ dir }}”, items = “{{ items }}”</p>
-
-<div class="debug">
-  <h2>Debug: All static_files under {{ page.path | replace: 'index.md','/' }}</h2>
-  <ul>
-  {% assign dir_path = page.path | replace: 'index.md','/' %}
-  {% for sf in site.static_files %}
-    {% if sf.path startswith dir_path %}
-      <li>{{ sf.path }}</li>
-    {% endif %}
-  {% endfor %}
-  </ul>
-</div>
